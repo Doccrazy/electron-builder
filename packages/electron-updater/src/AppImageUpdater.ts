@@ -117,7 +117,7 @@ export class AppImageUpdater extends BaseUpdater {
     try {
       moveSync(installerPath, destination, {overwrite: true});
       chmodSync(destination, "0755");
-      spawn(installerPath, args, spawnOptions)
+      spawn(destination, args, spawnOptions)
         .unref()
     }
     catch (e) {
