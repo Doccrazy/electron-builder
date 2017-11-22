@@ -97,6 +97,7 @@ export class AppImageUpdater extends BaseUpdater {
       detached: true,
       stdio: "ignore",
       env: {
+        ...process.env,
         APPIMAGE_SILENT_INSTALL: "true",
       },
     }
