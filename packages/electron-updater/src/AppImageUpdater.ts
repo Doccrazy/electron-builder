@@ -6,7 +6,7 @@ import { UPDATE_DOWNLOADED, UpdateCheckResult } from "./main"
 import { BaseUpdater } from "./BaseUpdater"
 import { readBlockMapDataFromAppImage } from "builder-util-runtime/out/blockMapApi"
 import { safeLoad } from "js-yaml"
-import { chmod, move } from "fs-extra-p"
+import { chmodSync, moveSync } from "fs-extra-p"
 import * as path from "path"
 import isDev from "electron-is-dev"
 import BluebirdPromise from "bluebird-lst"
@@ -114,18 +114,15 @@ export class AppImageUpdater extends BaseUpdater {
       destination = path.join(path.dirname(appImageFile), path.basename(installerPath))
       spawnOptions.env.APPIMAGE_DELETE_OLD_FILE = appImageFile
     }
-    move(installerPath, destination, {overwrite: true})
-      .then(() => chmod(destination, "0755"))
-      .then(() => {
-        try {
-          spawn(installerPath, args, spawnOptions)
-            .unref()
-        }
-        catch (e) {
-          this.dispatchError(e)
-        }
-      })
-      .catch(e => this.dispatchError(e))
+    try {
+      moveSync(installerPath, destination, {overwrite: true});
+      chmodSync(destination, "0755");
+      spawn(installerPath, args, spawnOptions)
+        .unref()
+    }
+    catch (e) {
+      this.dispatchError(e)
+    }
 
     return true
   }
